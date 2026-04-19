@@ -1,4 +1,4 @@
-# Stodopidly
+# sTODOpidly
 
 Yet another stupidly simple To Do app built as a Progressive Web App.
 
