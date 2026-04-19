@@ -18,7 +18,9 @@ var vueObject = new Vue({
             storageSaveList(vueObject.stodopidlyList);
         },
         addNextToDoItem: function () {
-            vueObject.stodopidlyList.push(vueObject.nextToDoItemInput);
+            var trimmed = vueObject.nextToDoItemInput.trim();
+            if (!trimmed) return;
+            vueObject.stodopidlyList.push(trimmed);
             vueObject.nextToDoItemInput = '';
             vueObject.isListEmpty = false;
             vueObject.checkStodopidlyList();

@@ -7,10 +7,10 @@
     <meta name="theme-color" content="#E9DAFF"/>
     <title>Stodopidly - Yet another To Do app</title>
     <link rel="manifest" href="manifest.json">
-    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2"></script>
     <script src="js/storage.js"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.1/css/bootstrap.min.css"
-          integrity="sha384-WskhaSGFgHYWDcbwN70/dfYBj47jz9qbsMId/iRN3ewGhXQFZCSftd1LZCfmhktB" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css"
+          integrity="sha384-xOolHFLEh07PJGoPkLv1IbcEPTNtaed2xpHsD9ESMhqIYd0nLMwNLD69Npy4HI+N" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="./css/stodopidly.css" media="all">
 </head>
 <body>
@@ -50,19 +50,6 @@
 </div>
 
 <script src="js/app.js"></script>
-<script src="https://www.gstatic.com/firebasejs/5.4.2/firebase.js"></script>
-<script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyDBM87wJBNuPGOIgJD5P6_yUYImDH_vego",
-        authDomain: "stodopidly.firebaseapp.com",
-        databaseURL: "https://stodopidly.firebaseio.com",
-        projectId: "stodopidly",
-        storageBucket: "stodopidly.appspot.com",
-        messagingSenderId: "135103208207"
-    };
-    firebase.initializeApp(config);
-</script>
 <script>
     if ('serviceWorker' in navigator) {
         navigator.serviceWorker.register('/sw.js')
