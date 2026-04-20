@@ -1,38 +1,68 @@
 var deferredInstallPrompt = null;
 
+/*
+ * stodopidlyList holds objects: { text: string, removing: boolean }
+ * Storage still persists plain strings — conversion happens on load/save.
+ */
 var vueObject = new Vue({
     el: '#app',
     data: {
         // State control
-        isProcessing: false,
-        isListEmpty: true,
-        isInstallable: false,
+        isProcessing:    false,
+        isListEmpty:     true,
+        isInstallable:   false,
         showInstallHint: false,
-        // To Do list
+        // To Do list (objects in memory, strings in localStorage)
         nextToDoItemInput: '',
-        stodopidlyList: storageGetList(),
+        stodopidlyList: (storageGetList() || []).map(function (text) {
+            return { text: text, removing: false };
+        }),
     },
     methods: {
         checkStodopidlyList: function () {
-            if (vueObject.stodopidlyList.length === 0) {
-                vueObject.isListEmpty = true;
-            } else {
-                vueObject.isListEmpty = false;
-            }
-            storageSaveList(vueObject.stodopidlyList);
+            vueObject.isListEmpty = vueObject.stodopidlyList.length === 0;
+            // Persist only the text; removing-state is transient
+            storageSaveList(vueObject.stodopidlyList.map(function (item) {
+                return item.text;
+            }));
         },
+
         addNextToDoItem: function () {
             var trimmed = vueObject.nextToDoItemInput.trim();
             if (!trimmed) return;
-            vueObject.stodopidlyList.push(trimmed);
+            vueObject.stodopidlyList.push({ text: trimmed, removing: false });
             vueObject.nextToDoItemInput = '';
             vueObject.isListEmpty = false;
             vueObject.checkStodopidlyList();
+            // Return focus to the input immediately so the next item can be typed
+            vueObject.$nextTick(function () {
+                vueObject.$refs.nextToDoItem.focus();
+            });
         },
+
         removeToDoItem: function (index) {
-            this.$delete(this.stodopidlyList, index);
-            vueObject.checkStodopidlyList();
+            var item = vueObject.stodopidlyList[index];
+            if (!item || item.removing) return;   // ignore double-taps
+
+            // 1. Mark as removing — CSS strikethrough + "done" label appear
+            vueObject.$set(vueObject.stodopidlyList, index, {
+                text: item.text,
+                removing: true
+            });
+
+            // Keep a reference so we can find the item even if indices shift
+            var ref = vueObject.stodopidlyList[index];
+
+            // 2. After a short pause, remove from the array
+            setTimeout(function () {
+                var i = vueObject.stodopidlyList.indexOf(ref);
+                if (i !== -1) {
+                    vueObject.$delete(vueObject.stodopidlyList, i);
+                    vueObject.checkStodopidlyList();
+                }
+            }, 300);
         },
+
         installApp: function () {
             if (!deferredInstallPrompt) return;
             vueObject.showInstallHint = false;
@@ -55,8 +85,6 @@ window.addEventListener('beforeinstallprompt', function (e) {
     e.preventDefault();
     deferredInstallPrompt = e;
     vueObject.isInstallable = true;
-
-    // Show the pill, then quietly hide it after 5 s
     vueObject.showInstallHint = true;
     setTimeout(function () {
         vueObject.showInstallHint = false;

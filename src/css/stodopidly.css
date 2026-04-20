@@ -77,12 +77,15 @@ body {
 
 /* ─── Input area ─────────────────────────────────────────────── */
 .input-area {
+    display: flex;
+    align-items: flex-end;
+    gap: 12px;
     margin-bottom: 28px;
 }
 
 .todo-input {
-    display: block;
-    width: 100%;
+    flex: 1;
+    min-width: 0;            /* prevent flex overflow */
     background: transparent;
     border: none;
     border-bottom: 1.5px solid var(--green);
@@ -106,12 +109,11 @@ body {
 }
 
 .add-btn {
-    margin-top: 16px;
-    display: inline-block;
+    flex-shrink: 0;
     background-color: var(--terracotta);
     color: var(--bg);
     border: none;
-    padding: 9px 28px;
+    padding: 9px 20px;
     font-family: 'DM Sans', Helvetica, Arial, sans-serif;
     font-size: 0.78rem;
     font-weight: 500;
@@ -120,6 +122,8 @@ body {
     border-radius: 2px;
     cursor: pointer;
     transition: opacity 0.18s ease, transform 0.1s ease;
+    /* align bottom edge with input's bottom border */
+    margin-bottom: 1.5px;
 }
 
 .add-btn:active {
@@ -221,6 +225,40 @@ body {
     .todo-item:hover .todo-done {
         opacity: 1;
     }
+}
+
+/*
+ * Removal animation state.
+ * Applied by JS; pointer-events:none prevents re-taps during the window.
+ * Because the element is fully removed from the DOM after the timeout,
+ * this class can never bleed onto the item that slides into its place.
+ */
+.todo-item.item-removing {
+    pointer-events: none;
+}
+
+.todo-item.item-removing .todo-dot {
+    background-color: var(--terracotta);
+    border-color: var(--terracotta);
+    transition: background-color 0.12s ease, border-color 0.12s ease;
+}
+
+.todo-item.item-removing .todo-text {
+    color: var(--muted);
+    text-decoration: line-through;
+    text-decoration-color: var(--terracotta);
+    transition: color 0.12s ease;
+}
+
+.todo-item.item-removing .todo-done {
+    opacity: 1;
+    animation: done-blink 90ms steps(1) infinite;
+}
+
+@keyframes done-blink {
+    0%   { opacity: 1; }
+    50%  { opacity: 0; }
+    100% { opacity: 1; }
 }
 
 /* ─── Hint message (below list) ──────────────────────────────── */

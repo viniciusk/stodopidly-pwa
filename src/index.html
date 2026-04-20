@@ -5,12 +5,12 @@
     <meta name="Description" content="Yet another stupidly simple To Do app.">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#1F3D2C"/>
-    <title>Stodopidly</title>
+    <title>sTODOpidly</title>
     <link rel="manifest" href="manifest.json">
 
     <!-- ── Apple PWA ─────────────────────────────────────────── -->
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-title" content="Stodopidly">
+    <meta name="apple-mobile-web-app-title" content="sTODOpidly">
     <meta name="apple-mobile-web-app-status-bar-style" content="default">
     <link rel="apple-touch-icon" href="icons/180x180.png">
 
@@ -56,8 +56,8 @@
     <div class="todo-wrap">
 
         <header class="app-header">
-            <h1 class="app-title">Stodopidly</h1>
-            <p class="app-tagline">keep it simple. get it done.</p>
+            <h1 class="app-title">sTODOpidly</h1>
+            <p class="app-tagline">simple.</p>
         </header>
 
         <div class="input-area">
@@ -82,10 +82,11 @@
             <li
                 v-for="(stodopidlyListItem, todoItemIndex) in stodopidlyList"
                 class="todo-item"
+                :class="{ 'item-removing': stodopidlyListItem.removing }"
                 v-on:click="removeToDoItem(todoItemIndex)"
             >
                 <span class="todo-dot"></span>
-                <span class="todo-text">{{stodopidlyListItem}}</span>
+                <span class="todo-text">{{stodopidlyListItem.text}}</span>
                 <span class="todo-done">done</span>
             </li>
         </ul>
