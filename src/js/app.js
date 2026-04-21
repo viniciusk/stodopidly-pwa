@@ -21,6 +21,7 @@ var vueObject = new Vue({
         dragTargetIndex: null,
         longPressTimer: null,
         isDragging: false,
+        deletedItemsStack: storageGetDeletedList() || [],
     },
     methods: {
         checkStodopidlyList: function () {
@@ -61,10 +62,29 @@ var vueObject = new Vue({
             setTimeout(function () {
                 var i = vueObject.stodopidlyList.indexOf(ref);
                 if (i !== -1) {
+                    vueObject.pushToDeleted(ref.text);
                     vueObject.$delete(vueObject.stodopidlyList, i);
                     vueObject.checkStodopidlyList();
                 }
             }, 300);
+        },
+
+        pushToDeleted: function(text) {
+            this.deletedItemsStack.push(text);
+            if (this.deletedItemsStack.length > 10) {
+                this.deletedItemsStack.shift();
+            }
+            storageSaveDeletedList(this.deletedItemsStack);
+        },
+
+        undoLastDelete: function() {
+            if (this.deletedItemsStack.length === 0) return;
+            var text = this.deletedItemsStack.pop();
+            storageSaveDeletedList(this.deletedItemsStack);
+            
+            this.stodopidlyList.push({ text: text, removing: false });
+            this.isListEmpty = false;
+            this.checkStodopidlyList();
         },
 
         removeToDoItemWrapper: function (index) {

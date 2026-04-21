@@ -282,13 +282,41 @@ body {
 }
 
 /* ─── Hint message (below list) ──────────────────────────────── */
-.hint-msg {
+.hint-wrap {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
     margin-top: 14px;
+}
+
+.hint-msg {
     font-size: 0.7rem;
     font-weight: 300;
     font-style: italic;
     color: var(--muted);
     letter-spacing: 0.01em;
+    margin-top: 2px;
+}
+
+.hint-msg:first-child {
+    margin-top: 0;
+}
+
+.undo-btn {
+    background: transparent;
+    border: none;
+    color: var(--terracotta);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    cursor: pointer;
+    text-decoration: underline;
+    opacity: 0.8;
+}
+
+.undo-btn:active {
+    opacity: 0.6;
 }
 
 /* ─── Install FAB ────────────────────────────────────────────── */

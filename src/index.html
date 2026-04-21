@@ -100,7 +100,15 @@
             </li>
         </ul>
 
-        <p v-show="!isListEmpty" class="hint-msg">Tap a task once you've knocked it out.</p>
+        <div class="hint-wrap" v-show="!isListEmpty || deletedItemsStack.length > 0">
+            <div class="hint-text-column">
+                <p v-show="!isListEmpty" class="hint-msg">Tap to knock it out.</p>
+                <p v-show="!isListEmpty" class="hint-msg">Long press and drag to reorder.</p>
+            </div>
+            <div class="hint-undo-column" v-show="deletedItemsStack.length > 0">
+                <button type="button" class="undo-btn" @click="undoLastDelete">UNDO</button>
+            </div>
+        </div>
 
         <div v-if="isProcessing" class="progress-bar-wrap">
             <div class="progress-bar-fill"></div>

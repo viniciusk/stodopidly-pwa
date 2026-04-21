@@ -28,3 +28,13 @@ function storageGetList()
 {
     return JSON.parse(localStorage.getItem("stodopidlyList"));
 }
+
+function storageSaveDeletedList(list)
+{
+    localStorage.setItem('stodopidlyDeletedList', JSON.stringify(list));
+}
+
+function storageGetDeletedList()
+{
+    return JSON.parse(localStorage.getItem("stodopidlyDeletedList"));
+}
