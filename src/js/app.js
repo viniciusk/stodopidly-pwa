@@ -17,6 +17,10 @@ var vueObject = new Vue({
         stodopidlyList: (storageGetList() || []).map(function (text) {
             return { text: text, removing: false };
         }),
+        dragIndex: null,
+        dragTargetIndex: null,
+        longPressTimer: null,
+        isDragging: false,
     },
     methods: {
         checkStodopidlyList: function () {
@@ -61,6 +65,87 @@ var vueObject = new Vue({
                     vueObject.checkStodopidlyList();
                 }
             }, 300);
+        },
+
+        removeToDoItemWrapper: function (index) {
+            // Only fire remove if a drag was not just completed
+            if (!this.isDragging) {
+                this.removeToDoItem(index);
+            }
+        },
+        
+        onPointerDown: function(index, event) {
+            if (event.pointerType === 'mouse' && event.button !== 0) return;
+            
+            // If already dragging or removing, ignore
+            if (this.isDragging || this.stodopidlyList[index].removing) return;
+            
+            // clear any existing timer
+            if (this.longPressTimer) clearTimeout(this.longPressTimer);
+            
+            var self = this;
+            this.longPressTimer = setTimeout(function() {
+                self.isDragging = true;
+                self.dragIndex = index;
+                self.dragTargetIndex = index;
+                if (event.target.setPointerCapture) {
+                    event.target.setPointerCapture(event.pointerId);
+                }
+            }, 350); // 350ms long press to pickup
+        },
+
+        onPointerMove: function(event) {
+            if (this.isDragging) {
+                // Determine target index
+                var clientX = event.clientX;
+                var clientY = event.clientY;
+                
+                var el = document.elementFromPoint(clientX, clientY);
+                if (el) {
+                    var li = el.closest('li.todo-item');
+                    if (li && li.parentNode) {
+                        var siblings = Array.prototype.slice.call(li.parentNode.children);
+                        var targetIndex = siblings.indexOf(li);
+                        // Make sure we only index the draggable items
+                        if (targetIndex !== -1 && targetIndex !== this.dragTargetIndex) {
+                            this.dragTargetIndex = targetIndex;
+                        }
+                    }
+                }
+            } else if (this.longPressTimer) {
+                clearTimeout(this.longPressTimer);
+                this.longPressTimer = null;
+            }
+        },
+
+        onPointerUp: function(event) {
+            if (this.longPressTimer) {
+                clearTimeout(this.longPressTimer);
+                this.longPressTimer = null;
+            }
+            
+            if (this.isDragging) {
+                var from = this.dragIndex;
+                var to = this.dragTargetIndex;
+                
+                if (from !== null && to !== null && from !== to && to < this.stodopidlyList.length) {
+                    // reorder array
+                    var item = this.stodopidlyList.splice(from, 1)[0];
+                    this.stodopidlyList.splice(to, 0, item);
+                    this.checkStodopidlyList();
+                }
+                
+                var self = this;
+                // delay clearing isDragging to block the click event that fires afterward
+                setTimeout(function() {
+                    self.isDragging = false;
+                    self.dragIndex = null;
+                    self.dragTargetIndex = null;
+                    if (event.target.releasePointerCapture) {
+                        try { event.target.releasePointerCapture(event.pointerId); } catch(e){}
+                    }
+                }, 50);
+            }
         },
 
         installApp: function () {

@@ -82,8 +82,17 @@
             <li
                 v-for="(stodopidlyListItem, todoItemIndex) in stodopidlyList"
                 class="todo-item"
-                :class="{ 'item-removing': stodopidlyListItem.removing }"
-                v-on:click="removeToDoItem(todoItemIndex)"
+                :class="{ 
+                    'item-removing': stodopidlyListItem.removing,
+                    'item-dragging': dragIndex === todoItemIndex,
+                    'item-drag-over': dragTargetIndex === todoItemIndex
+                }"
+                @pointerdown="onPointerDown(todoItemIndex, $event)"
+                @pointermove="onPointerMove($event)"
+                @pointerup="onPointerUp($event)"
+                @pointercancel="onPointerUp($event)"
+                v-on:click="removeToDoItemWrapper(todoItemIndex)"
+                style="touch-action: none;"
             >
                 <span class="todo-dot"></span>
                 <span class="todo-text">{{stodopidlyListItem.text}}</span>
