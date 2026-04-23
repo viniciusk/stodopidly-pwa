@@ -78,18 +78,17 @@
 
         <p v-show="isListEmpty" class="status-msg">Nothing here yet — the day is wide open.</p>
 
-        <ul v-show="!isListEmpty" class="todo-items">
+        <transition-group name="todo-list" tag="ul" class="todo-items" v-show="!isListEmpty">
             <li
                 v-for="(stodopidlyListItem, todoItemIndex) in stodopidlyList"
+                :key="stodopidlyListItem.id"
                 class="todo-item"
                 :class="{ 
                     'item-removing':  stodopidlyListItem.removing,
                     'item-dragging':  dragIndex === todoItemIndex,
-                    'item-drag-over': dragTargetIndex === todoItemIndex,
                     'item-selected':  selectedIndex === todoItemIndex
                 }"
                 @pointerdown="onPointerDown(todoItemIndex, $event)"
-                @pointermove="onPointerMove($event)"
                 @pointerup="onPointerUp(todoItemIndex, $event)"
                 @pointercancel="onPointerUp(todoItemIndex, $event)"
                 @dblclick="onDoubleTap(todoItemIndex, $event)"
@@ -101,11 +100,10 @@
                     class="todo-done-btn"
                     :class="{ 'todo-done-btn--visible': selectedIndex === todoItemIndex }"
                     type="button"
-                    @pointerdown.stop
                     @click.stop="onDoneBtn(todoItemIndex)"
                 >done</button>
             </li>
-        </ul>
+        </transition-group>
 
         <div class="hint-wrap" v-show="!isListEmpty || deletedItemsStack.length > 0">
             <div class="hint-text-column">

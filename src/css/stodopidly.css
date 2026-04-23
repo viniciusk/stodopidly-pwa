@@ -12,6 +12,7 @@
     --ink:         #111412;
     --muted:       rgba(17, 20, 18, 0.38);
     --divider:     rgba(31, 61, 44, 0.14);
+    --neon-green:  #B7FF5F;
 }
 
 /* ─── Base ───────────────────────────────────────────────────── */
@@ -200,7 +201,7 @@ body {
     cursor: pointer;
     opacity: 0;
     transform: translateX(6px);
-    pointer-events: none;          /* invisible = non-interactive */
+    pointer-events: none;
     transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
@@ -263,7 +264,12 @@ body {
 .todo-item.item-removing .todo-done-btn {
     opacity: 1;
     transform: translateX(0);
+    background-color: var(--green);
+    color: var(--neon-green);
+    border-color: var(--neon-green);
+    pointer-events: none;
     animation: done-blink 90ms steps(1) infinite;
+    margin-right: 5px;
 }
 
 @keyframes done-blink {
@@ -285,11 +291,10 @@ body {
     position: relative;
 }
 
-.todo-item.item-drag-over {
-    border-top: 5px solid var(--terracotta);
-    border-bottom: 1px solid var(--terracotta);
-    margin-top: 14px;
+.todo-list-move {
+    transition: transform 0.3s ease;
 }
+
 
 /* ─── Hint message (below list) ──────────────────────────────── */
 .hint-wrap {
