@@ -1,2 +1,22 @@
-/.agent
-/.agent-missions
+# Firebase
+.firebase/
+firebase-debug.log*
+.firebaserc
+
+# IDEs
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Agent/Mission Folders
+.agent/
+.agent-missions/
+
+# Node (in case you add it later)
+node_modules/
+npm-debug.log*
