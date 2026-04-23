@@ -161,8 +161,12 @@ var vueObject = new Vue({
                     this._lastTapIndex = index;
                     if (this.selectedIndex === index) {
                         this.selectedIndex = null;
+                        this._selectedAt   = 0;
                     } else {
                         this.selectedIndex = index;
+                        // Record when we selected so onDoneBtn can ignore
+                        // the ghost click the browser fires ~300ms later.
+                        this._selectedAt = Date.now();
                     }
                 }
             }
@@ -253,6 +257,11 @@ var vueObject = new Vue({
         },
 
         onDoneBtn: function(index) {
+            // Guard against the mobile "ghost click" — the browser fires a synthetic
+            // click event ~300ms after a touch, at the position where the finger
+            // lifted. If the done button just slid into that spot (because the item
+            // was just selected), this click must be ignored.
+            if (Date.now() - (this._selectedAt || 0) < 350) return;
             this.removeToDoItem(index);
         },
 

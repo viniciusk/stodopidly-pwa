@@ -1,4 +1,4 @@
-var appVersion = '0.9';
+var appVersion = '1.0';
 var cacheName  = 'stodopidly-v' + appVersion;
 
 var filesToCache = [
