@@ -116,20 +116,24 @@ var vueObject = new Vue({
             var self = this;
             var capturedIndex = index;
 
-            // Start the long-press timer. Pointer capture is NOT set here — only
-            // after the threshold fires — so that dblclick can still work normally.
+            // If pressing the "done" button specifically, don't initiate a drag
+            if (event.target.classList.contains('todo-done-btn')) return;
+
+            // If already selected, we use a much shorter "immediate-ish" delay (120ms)
+            // to allow a quick tap or double-tap to win over a drag start.
+            var delay = (this.selectedIndex === index) ? 100 : 222;
+
             this.longPressTimer = setTimeout(function() {
                 self.longPressTimer = null;
                 self.isDragging    = true;
                 self.selectedIndex = null;
                 self.dragIndex     = capturedIndex;
 
-                // Now capture so pointermove keeps firing across items
                 var list = document.querySelector('.todo-items');
                 if (list && list.setPointerCapture) {
                     try { list.setPointerCapture(event.pointerId); } catch(e) {}
                 }
-            }, 450);
+            }, delay);
         },
 
         onPointerUp: function(index, event) {
