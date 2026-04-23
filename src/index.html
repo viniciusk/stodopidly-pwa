@@ -56,7 +56,7 @@
     <div class="todo-wrap">
 
         <header class="app-header">
-            <h1 class="app-title">sTODOpidly</h1>
+            <h1 class="app-title"><span class="title-fade">s</span>TODO<span class="title-fade">pidly</span></h1>
             <p class="app-tagline">simple.</p>
         </header>
 
@@ -83,27 +83,34 @@
                 v-for="(stodopidlyListItem, todoItemIndex) in stodopidlyList"
                 class="todo-item"
                 :class="{ 
-                    'item-removing': stodopidlyListItem.removing,
-                    'item-dragging': dragIndex === todoItemIndex,
-                    'item-drag-over': dragTargetIndex === todoItemIndex
+                    'item-removing':  stodopidlyListItem.removing,
+                    'item-dragging':  dragIndex === todoItemIndex,
+                    'item-drag-over': dragTargetIndex === todoItemIndex,
+                    'item-selected':  selectedIndex === todoItemIndex
                 }"
                 @pointerdown="onPointerDown(todoItemIndex, $event)"
                 @pointermove="onPointerMove($event)"
-                @pointerup="onPointerUp($event)"
-                @pointercancel="onPointerUp($event)"
-                v-on:click="removeToDoItemWrapper(todoItemIndex)"
+                @pointerup="onPointerUp(todoItemIndex, $event)"
+                @pointercancel="onPointerUp(todoItemIndex, $event)"
+                @dblclick="onDoubleTap(todoItemIndex, $event)"
                 style="touch-action: none;"
             >
                 <span class="todo-dot"></span>
                 <span class="todo-text">{{stodopidlyListItem.text}}</span>
-                <span class="todo-done">done</span>
+                <button
+                    class="todo-done-btn"
+                    :class="{ 'todo-done-btn--visible': selectedIndex === todoItemIndex }"
+                    type="button"
+                    @pointerdown.stop
+                    @click.stop="onDoneBtn(todoItemIndex)"
+                >done</button>
             </li>
         </ul>
 
         <div class="hint-wrap" v-show="!isListEmpty || deletedItemsStack.length > 0">
             <div class="hint-text-column">
-                <p v-show="!isListEmpty" class="hint-msg">Tap to knock it out.</p>
-                <p v-show="!isListEmpty" class="hint-msg">Long press and drag to reorder.</p>
+                <p v-show="!isListEmpty" class="hint-msg">Double-tap to knock it out.</p>
+                <p v-show="!isListEmpty" class="hint-msg">Long-press & drag to reorder.</p>
             </div>
             <div class="hint-undo-column" v-show="deletedItemsStack.length > 0">
                 <button type="button" class="undo-btn" @click="undoLastDelete">UNDO</button>

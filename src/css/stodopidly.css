@@ -66,8 +66,12 @@ body {
     line-height: 1.05;
 }
 
+.title-fade {
+    opacity: 0.80;
+}
+
 .app-tagline {
-    margin-top: 6px;
+    margin-top: -3px;
     font-size: 0.8rem;
     font-weight: 300;
     letter-spacing: 0.1em;
@@ -181,51 +185,55 @@ body {
     transition: color 0.18s ease, text-decoration 0.18s ease;
 }
 
-.todo-done {
-    font-size: 0.7rem;
+.todo-done-btn {
+    flex-shrink: 0;
+    background: transparent;
+    border: 1.5px solid var(--terracotta);
+    border-radius: 2px;
+    color: var(--terracotta);
+    font-family: 'DM Sans', Helvetica, Arial, sans-serif;
+    font-size: 0.68rem;
     font-weight: 500;
     letter-spacing: 0.08em;
     text-transform: uppercase;
-    color: var(--terracotta);
+    padding: 3px 8px;
+    cursor: pointer;
     opacity: 0;
-    transition: opacity 0.18s ease;
+    transform: translateX(6px);
+    pointer-events: none;          /* invisible = non-interactive */
+    transition: opacity 0.18s ease, transform 0.18s ease;
 }
 
-/* Touch feedback — :active fires on tap but never sticks */
-.todo-item:active .todo-dot {
-    background-color: var(--terracotta);
-    border-color: var(--terracotta);
+/* ── Item selected (single-tap) ─────────────────────────── */
+.todo-item.item-selected {
+    background-color: rgba(31, 61, 44, 0.06);
+    border-radius: 4px;
+    padding-right: 5px;
+    padding-left: 8px;
 }
 
-.todo-item:active .todo-text {
-    color: var(--muted);
-    text-decoration: line-through;
-    text-decoration-color: var(--terracotta);
+.todo-item.item-selected .todo-dot {
+    background-color: var(--green);
+    border-color: var(--green);
 }
 
-.todo-item:active .todo-done {
+/* Done button becomes visible when item is selected */
+.todo-done-btn.todo-done-btn--visible {
     opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
 }
 
-/*
- * Hover states ONLY for real pointer devices.
- * @media (hover: hover) excludes touch screens, which means the
- * hover state can never get "stuck" after a tap removes an item.
- */
+/* Hover: simple highlight only (no strikethrough) */
 @media (hover: hover) and (pointer: fine) {
-    .todo-item:hover .todo-dot {
+    .todo-item:hover {
+        background-color: rgba(31, 61, 44, 0.05);
+        border-radius: 4px;
+    }
+
+    .todo-done-btn:hover {
         background-color: var(--terracotta);
-        border-color: var(--terracotta);
-    }
-
-    .todo-item:hover .todo-text {
-        color: var(--muted);
-        text-decoration: line-through;
-        text-decoration-color: var(--terracotta);
-    }
-
-    .todo-item:hover .todo-done {
-        opacity: 1;
+        color: var(--bg);
     }
 }
 
@@ -252,8 +260,9 @@ body {
     transition: color 0.12s ease;
 }
 
-.todo-item.item-removing .todo-done {
+.todo-item.item-removing .todo-done-btn {
     opacity: 1;
+    transform: translateX(0);
     animation: done-blink 90ms steps(1) infinite;
 }
 
@@ -277,8 +286,9 @@ body {
 }
 
 .todo-item.item-drag-over {
-    border-top: 6px solid var(--terracotta);
-    border-bottom: 2px solid var(--terracotta);
+    border-top: 5px solid var(--terracotta);
+    border-bottom: 1px solid var(--terracotta);
+    margin-top: 14px;
 }
 
 /* ─── Hint message (below list) ──────────────────────────────── */
